@@ -13,16 +13,25 @@
     <div id="app">
       <div id="map"></div>
       <div id="loading">Loading data...</div>
-      <button id="download-btn" @click="downloadGeoJSON">Download GeoJSON</button>
+      <div id="controls">
+        <button id="start-btn" @click="startSimulation" :disabled="simulationRunning">Start Simulation</button>
+        <button id="stop-btn" @click="stopSimulation" :disabled="!simulationRunning">Stop Simulation</button>
+        <button id="reset-btn" @click="resetSimulation">Reset Simulation</button>
+        <button id="download-btn" @click="downloadGeoJSON">Download GeoJSON</button>
+      </div>
       <div id="status"></div>
       <div id="legend">
         <div class="legend-item">
           <div class="legend-color" style="background-color: #ff0000;"></div>
-          <span>Risk: 1.0</span>
+          <span>High Suitability (1.0)</span>
         </div>
         <div class="legend-item">
           <div class="legend-color" style="background-color: #ffff00;"></div>
-          <span>Risk: 0.0</span>
+          <span>Low Suitability (0.0)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: #0000ff;"></div>
+          <span>Infected</span>
         </div>
       </div>
     </div>
