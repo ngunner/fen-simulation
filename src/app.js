@@ -27,6 +27,7 @@ createApp({
     }
 
     function startSimulation() {
+      console.log('Starting simulation');
       if (simulationRunning.value) return;
       
       // Reset simulation state
@@ -251,6 +252,58 @@ createApp({
                 'circle-opacity': 1,
               }
             });
+            
+            // Load and add vineyards centroids layer
+            console.log('Attempting to load vineyards data...');
+            fetch('/data/finger_lakes_vineyards_centroids.geojson')
+              .then(response => {
+                console.log('Fetch response received:', response.status);
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(data => {
+                console.log('Vineyards data loaded successfully:', data.features.length, 'features');
+                
+                if (!map.value.getSource('vineyards')) {
+                  // Add the source
+                  map.value.addSource('vineyards', {
+                    type: 'geojson',
+                    data: data
+                  });
+
+                  // Add the layer
+                  map.value.addLayer({
+                    id: 'vineyards',
+                    type: 'circle',
+                    source: 'vineyards',
+                    paint: {
+                      'circle-radius': 8,  // Increased size
+                      'circle-color': '#800080',  // Purple color for vineyards
+                      'circle-opacity': 0.9,  // Increased opacity
+                      'circle-stroke-width': 2,  // Increased stroke width
+                      'circle-stroke-color': '#ffffff'
+                    }
+                  });
+                  
+                  // Add a legend for the vineyards
+                  const legend = document.getElementById('legend');
+                  const vineyardsLegend = document.createElement('div');
+                  vineyardsLegend.innerHTML = '<div class="legend-item"><span class="legend-color" style="background-color: #800080;"></span>Vineyards</div>';
+                  legend.appendChild(vineyardsLegend);
+                  
+                  console.log('Vineyards layer added successfully');
+                } else {
+                  console.log('Vineyards source already exists, updating data');
+                  map.value.getSource('vineyards').setData(data);
+                }
+              })
+              .catch(error => {
+                console.error('Error loading vineyards GeoJSON file:', error);
+                statusMessage.value = `Error loading vineyards: ${error.message}`;
+                document.getElementById('status').textContent = statusMessage.value;
+              });
             
             // Count high and low risk points
             const highRiskCount = data.features.filter(f => f.properties.risk === 1.0).length;
