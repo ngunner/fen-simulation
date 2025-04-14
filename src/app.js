@@ -224,7 +224,7 @@ createApp({
         map.value.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
         
         // Load the processed grid points GeoJSON file with risk values
-        fetch('/data/finger_lakes_grid_points_1km_with_risk.geojson')
+        fetch('./data/finger_lakes_grid_points_1km_with_risk.geojson')
           .then(response => response.json())
           .then(data => {
             landPoints.value = data;
@@ -255,7 +255,7 @@ createApp({
             
             // Load and add vineyards centroids layer
             console.log('Attempting to load vineyards data...');
-            fetch('/data/finger_lakes_vineyards_centroids.geojson')
+            fetch('./data/finger_lakes_vineyards_centroids.geojson')
               .then(response => {
                 console.log('Fetch response received:', response.status);
                 if (!response.ok) {
